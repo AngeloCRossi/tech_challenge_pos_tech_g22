@@ -1,7 +1,6 @@
-numpy~=1.26.4
-pandas~=2.1.4
-matplotlib~=3.7.5
-seaborn~=0.13.2
-plotly~=5.24.1
-scikit-learn~=1.5.2
-pycaret~=3.3.2
+numpy
+pandas
+scikit-learn
+matplotlib
+plotly
+imbalanced-learn
