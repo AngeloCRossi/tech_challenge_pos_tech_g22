@@ -1,39 +1,64 @@
-# tech_challenge_pos_tech_g22
+# Projeto de Previsão de Diabetes
 
-- link da base de dados: https://www.kaggle.com/datasets/mathchi/diabetes-data-set/data
+## Descrição do Projeto
 
-- Tiraremos o campo 'Outcome', para poder treinar.
-- o DS tem 768 linhas e 9 colunas, onde são:
+Este projeto tem como objetivo principal desenvolver e avaliar modelos de Machine Learning para prever o diagnóstico de diabetes com base em dados de medições diagnósticas. O trabalho foca na identificação do modelo mais eficaz e robusto, capaz de atuar como uma ferramenta de apoio para a triagem e o diagnóstico precoce da doença, sem substituir a avaliação médica profissional.
 
-     0   Pregnancies               768 non-null    int64
-     1   Glucose                   768 non-null    int64
-     2   BloodPressure             768 non-null    int64
-     3   SkinThickness             768 non-null    int64
-     4   Insulin                   768 non-null    int64
-     5   BMI                       768 non-null    float64
-     6   DiabetesPedigreeFunction  768 non-null    float64
-     7   Age                       768 non-null    int64
-     8   Outcome                   768 non-null    int64
 
-    Number of times pregnant
-    Plasma glucose concentration a 2 hours in an oral glucose tolerance test
-    Diastolic blood pressure (mm Hg)
-    Triceps skin fold thickness (mm)
-    2-Hour serum insulin (mu U/ml)
-    Body mass index (weight in kg/(height in m)^2)
-    Diabetes pedigree function
-    Age (years)
-    Class variable (0 or 1)
+## Preparando o ambiente
 
-- Todas as pessoas são mulheres indígena(Pina), maiores de 21 anos.
-- Faremos gráficos com cada coluna relacionando em ter ou não diabetes, faremos analise e discutiremos posteriormente.
-- Removeremos linhas inteiras onde houver dado como 'null'
-- Buscaremos tipos distintos dos dados.
-- Não tem variavel categórica. Já temos o dado como 0 e 1
-- Análise de correlação, conforme aula e modelo que o Groff mandou no grupo de discord (https://www.kaggle.com/code/ohseokkim/diabetes-three-ensemble-models/notebook#Checking-features-before-modeling)
-- Modelos preditivos Regressão logística, Árvore de Decisão, KNN
-- Separação clara entre treino, validação e teste.
+- Clone o projeto para sua máquina
 
-- 85% dos dados para treino e 15% para teste
-- Interpretação dos resultados à decidir
--Discuta os resultados de maneira crítica. O seu modelo pode ser utilizado na prática? Como?  Falaremos que sim, se houvesse mais dados para testar, e que se fosse o caso haveria uma interface, como um chatbot.
+
+    >git clone https://github.com/AngeloCRossi/tech_challenge_pos_tech_g22
+    
+    >cd tech_challenge_pos_tech_g22
+
+- Crie e ative o ambiente virtual Python
+
+    Instalação
+    >python -m pip install --user virtualenv
+
+    Criação
+    >virtualenv venv
+
+    Ativação Linux
+    >source venv/bin/activate
+
+    Ativação Windows
+    >venv\Scripts\activate
+
+
+- Instale as depedências
+
+    >pip install -r requirements.txt
+
+
+
+## Conjunto de Dados
+
+O conjunto de dados, originalmente do *National Institute of Diabetes and Digestive and Kidney Diseases (NIDDK)*, inclui informações de pacientes do sexo feminino, com pelo menos 21 anos de idade e de herança Pima-indígena. As colunas de dados incluem:
+
+| Nome da Coluna             | Tipo de Dado | Descrição                                  |
+| -------------------------- | ------------ | ------------------------------------------ |
+| `gravidez`                 | `int64`      | Número de gestações.                       |
+| `glicose`                  | `int64`      | Concentração de glicose no plasma.         |
+| `pressao_arterial`         | `int64`      | Pressão arterial diastólica (mm Hg).       |
+| `espessura_pele`           | `int64`      | Espessura da dobra da pele do tríceps (mm).|
+| `insulina`                 | `int64`      | Insulina sérica de 2 horas (mu U/ml).      |
+| `imc`                      | `float64`    | Índice de Massa Corporal (peso em kg/(altura em m)^2).|
+| `historico_familiar_diabetes` | `float64`    | Função de histórico familiar de diabetes.  |
+| `idade`                    | `int64`      | Idade em anos.                             |
+| `diagnostico`              | `int64`      | Variável de saída (0 = não diabético, 1 = diabético). |
+
+## Metodologia
+
+A metodologia do projeto seguiu um pipeline estruturado para garantir a confiabilidade dos resultados:
+
+1.  **Pré-processamento de Dados**: As colunas foram traduzidas para português e valores inválidos (representados por zero) nas features de `glicose`, `pressao_arterial`, `espessura_pele`, `insulina` e `imc` foram substituídos pela mediana da respectiva coluna para evitar distorções.
+2.  **Balanceamento de Classes**: A técnica **SMOTE (Synthetic Minority Over-sampling Technique)** foi utilizada para lidar com o desequilíbrio entre as classes de diagnóstico, criando amostras sintéticas da classe minoritária.
+3.  **Avaliação de Múltiplos Modelos**: Foram comparados seis algoritmos de classificação: `KNN`, `Regressão Logística`, `Decision Tree`, `Random Forest`, `SVM (RBF Kernel)` e `Naive Bayes`.
+4.  **Otimização de Modelos**:
+    * **Ajuste de Hiperparâmetros**: `GridSearchCV` foi aplicado para encontrar a melhor combinação de parâmetros para cada modelo.
+    * **Ajuste de Limiar (`Threshold`)**: `TunedThresholdClassifierCV` foi utilizado para otimizar o ponto de corte de classificação, maximizando o `F1-Score` de forma robusta com validação cruzada.
+5.  **Validação Cruzada**: A técnica de `StratifiedKFold` (5 folds) foi empregada para avaliar o desempenho dos modelos em diferentes subconjuntos de dados, garantindo que os resultados fossem representativos e não viesados.
